@@ -1,0 +1,41 @@
+extends layout
+block content
+  .page-heading
+    div
+      h1.mb-1= title
+      p.text-muted.mb-0 Enter the details required to track this asset.
+  form.asset-form(method='post',action=asset.id?'/assets/'+asset.id+'?_method=PUT':'/assets')
+    .form-section
+      .row.g-4
+        .col-md-6
+          label.form-label(for='assetCode') Asset ID
+          input#assetCode.form-control(name='assetCode',required,placeholder='e.g. AST-0001',value=asset.assetCode || '')
+        .col-md-6
+          label.form-label(for='serialNumber') Serial Number
+          input#serialNumber.form-control(name='serialNumber',required,placeholder='Manufacturer serial number',value=asset.serialNumber || '')
+        .col-md-6
+          label.form-label(for='category') Category
+          select#category.form-select(name='CategoryId',required)
+            option(value='',selected=!asset.CategoryId,disabled) Select category
+            each c in categories
+              option(value=c.id,selected=String(asset.CategoryId)===String(c.id))= c.name
+        .col-md-6
+          label.form-label(for='branch') Branch
+          input#branch.form-control(name='branch',required,placeholder='e.g. Mumbai HQ',value=asset.branch || '')
+        .col-md-6
+          label.form-label(for='make') Company Name
+          input#make.form-control(name='make',placeholder='e.g. Dell',value=asset.make || '')
+        .col-md-6
+          label.form-label(for='model') Model
+          input#model.form-control(name='model',placeholder='e.g. Latitude 5440',value=asset.model || '')
+        .col-md-6
+          label.form-label(for='purchaseDate') Purchase Date
+          input#purchaseDate.form-control(type='date',name='purchaseDate',value=asset.purchaseDate || '')
+        .col-md-6
+          label.form-label(for='purchaseValue') Value (INR)
+          .input-group
+            span.input-group-text &#8377;
+            input#purchaseValue.form-control(type='number',min='0',step='0.01',name='purchaseValue',placeholder='0.00',value=asset.purchaseValue || '')
+    .form-actions
+      a.btn.btn-light.border(href='/assets') Cancel
+      button.btn.btn-primary(type='submit')= asset.id ? 'Save changes' : 'Register asset'

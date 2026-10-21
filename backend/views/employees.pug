@@ -1,0 +1,29 @@
+extends layout
+block content
+  .d-flex.justify-content-between.mb-3
+    h1 Employees
+    a.btn.btn-primary(href='/employees/new') + Add employee
+  .mb-3
+    a.btn.btn-sm(class=state===''?'btn-primary':'btn-outline-primary',href='/employees') All
+    a.btn.btn-sm.ms-1(class=state==='active'?'btn-success':'btn-outline-success',href='/employees?state=active') Active
+    a.btn.btn-sm.ms-1(class=state==='inactive'?'btn-secondary':'btn-outline-secondary',href='/employees?state=inactive') Inactive
+  table.table.table-hover.datatable
+    thead
+      tr
+        th Code
+        th Name
+        th Email
+        th Branch
+        th Department
+        th Status
+        th Actions
+    tbody
+      each e in employees
+        tr
+          td= e.employeeCode
+          td= e.name
+          td= e.email
+          td= e.branch
+          td= e.department
+          td: span.badge(class=e.active?'text-bg-success':'text-bg-secondary')=e.active?'Active':'Inactive'
+          td: a.btn.btn-sm.btn-outline-primary(href='/employees/'+e.id+'/edit') Edit

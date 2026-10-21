@@ -1,0 +1,22 @@
+extends layout
+block content
+  h1 Issue asset
+  p.text-muted Assign an available asset to an active employee. The assignment is recorded in the asset history.
+  form.card.card-body.issue-form(method='post',action='/issue')
+    .mb-3
+      label.form-label Available asset
+      select.form-select(name='assetId',required)
+        option(value='') Select an asset
+        each a in assets
+          option(value=a.id) #{a.assetCode} — #{a.make} #{a.model} (#{a.serialNumber})
+    .mb-3
+      label.form-label Employee
+      select.form-select(name='employeeId',required)
+        option(value='') Select an employee
+        each e in employees
+          option(value=e.id) #{e.name} — #{e.employeeCode}, #{e.branch}
+    .mb-3
+      label.form-label Notes (optional)
+      textarea.form-control(name='notes',rows='3')
+    .d-flex.justify-content-end.mt-3
+      button.btn.btn-primary.issue-btn(type='submit') Issue asset

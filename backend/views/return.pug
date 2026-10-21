@@ -1,0 +1,47 @@
+extends layout
+block content
+  .page-heading
+    div
+      h1.mb-1 Return assets
+      p.text-muted.mb-0 Record returned equipment and the reason it was returned.
+    a.btn.btn-outline-secondary(href='/assets') View all assets
+  if events.length
+    .card
+      .card-body.p-0
+        .table-responsive
+          table.table.table-hover.mb-0
+            thead
+              tr
+                th Asset
+                th Current holder
+                th Issued on
+                th Return details
+            tbody
+              each event in events
+                tr
+                  td
+                    strong= event.Asset.assetCode
+                    .small.text-muted #{event.Asset.make || ''} #{event.Asset.model || ''}
+                  td
+                    if event.Employee
+                      = event.Employee.name
+                      .small.text-muted= event.Employee.employeeCode
+                    else
+                      span.text-muted Not recorded
+                  td= new Date(event.eventDate).toLocaleDateString()
+                  td
+                    form.return-form(method='post',action='/return')
+                      input(type='hidden',name='assetId',value=event.Asset.id)
+                      select.form-select.form-select-sm(name='reason',required)
+                        option(value='',selected,disabled) Select reason
+                        option(value='Upgrade') Upgrade
+                        option(value='Repair') Repair
+                        option(value='Resignation') Resignation
+                        option(value='Other') Other
+                      input.form-control.form-control-sm(name='notes',placeholder='Optional notes')
+                      button.btn.btn-sm.btn-success.return-btn(type='submit') Return
+  else
+    .empty-state
+      h4 No assets are currently issued
+      p.text-muted.mb-3 There is nothing to return right now. Issue an in-stock asset to an employee first.
+      a.btn.btn-primary(href='/issue') Issue an asset

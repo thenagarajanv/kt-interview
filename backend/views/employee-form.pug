@@ -1,0 +1,19 @@
+extends layout
+block content
+  h1= title
+  form.card.card-body(method='post',action=employee.id?'/employees/'+employee.id+'?_method=PUT':'/employees')
+    .row.g-3
+      .col-md-4: label.form-label Employee code
+        input.form-control(name='employeeCode',required,value=employee.employeeCode)
+      .col-md-8: label.form-label Full name
+        input.form-control(name='name',required,value=employee.name)
+      .col-md-6: label.form-label Email
+        input.form-control(type='email',name='email',value=employee.email)
+      .col-md-3: label.form-label Branch
+        input.form-control(name='branch',required,value=employee.branch)
+      .col-md-3: label.form-label Department
+        input.form-control(name='department',value=employee.department)
+      .col-12.form-check.ms-2
+        input.form-check-input(type='checkbox',name='active',checked=employee.id ? employee.active : true)
+        label.form-check-label Active employee
+    button.btn.btn-sm.btn-primary.mt-4.employee-save-btn(type='submit') Save employee

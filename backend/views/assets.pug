@@ -1,0 +1,37 @@
+extends layout
+block content
+  .d-flex.justify-content-between.mb-3
+    h1 Assets
+    a.btn.btn-primary(href='/assets/new') + Register asset
+  form.row.g-2.mb-3
+    .col-md-4: input.form-control(name='q',placeholder='Search make, model, serial, asset ID',value=filters.q)
+    .col-md-3: select.form-select(name='category')
+      option(value='') All categories
+      each c in categories
+        option(value=c.id,selected=String(filters.category)===String(c.id))=c.name
+    .col-md-2: button.btn.btn-outline-primary Search
+  table.table.table-hover.datatable
+    thead
+      tr
+        th Asset ID
+        th Category
+        th Make / model
+        th Serial number
+        th Branch
+        th Status
+        th Actions
+    tbody
+      each a in assets
+        tr
+          td= a.assetCode
+          td= a.Category && a.Category.name
+          td #{a.make} #{a.model}
+          td= a.serialNumber
+          td= a.branch
+          td: span.badge(class=a.status==='IN_STOCK'?'text-bg-success':a.status==='ISSUED'?'text-bg-warning':'text-bg-secondary')=a.status.replace('_',' ')
+          td.asset-actions
+            a.btn.btn-sm.btn-outline-primary.asset-action-btn(href='/assets/'+a.id+'/history') History
+            a.btn.btn-sm.btn-outline-secondary.asset-action-btn(href='/assets/'+a.id+'/edit') Edit
+            if a.status !== 'SCRAPPED'
+              form.d-inline(method='post',action='/assets/'+a.id+'/scrap')
+                button.btn.btn-sm.btn-outline-danger.asset-action-btn(type='submit',onclick="return confirm('Mark this asset as scrapped?')") Scrap

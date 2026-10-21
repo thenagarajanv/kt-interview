@@ -1,0 +1,29 @@
+extends layout
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    div
+      h1.mb-1 Asset overview
+      p.text-muted.mb-0 Track equipment, accountability, and value in one place.
+    a.btn.btn-primary.border(href='/assets/new') + Register asset
+  .row.g-3.mb-4
+    .col-md-3
+      .card.stat-card.border-primary
+        .card-body
+          .text-muted Total assets
+          .display-6.fw-semibold= total
+    .col-md-3
+      .card.stat-card.border-success
+        .card-body
+          .text-muted Available stock
+          .display-6.fw-semibold= stock
+    .col-md-3
+      .card.stat-card.border-warning
+        .card-body
+          .text-muted Issued
+          .display-6.fw-semibold= issued
+    .col-md-3
+      .card.stat-card.border-secondary
+        .card-body
+          .text-muted Scrapped
+          .display-6.fw-semibold= scrap
+  .card

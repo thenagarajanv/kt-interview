@@ -1,0 +1,18 @@
+extends layout
+block content
+  h1 Asset Categories
+  form.card.card-body.mb-4(method='post',action='/categories')
+    .row.g-3
+      .col-md-4: input.form-control(placeholder='Category name e.g. Laptop',name='name',required)
+      .col-md-6: input.form-control(placeholder='Description',name='description')
+      .col-md-2: button.btn.btn-primary.w-100 Add category
+  table.table.datatable
+    thead
+      tr
+        th Category
+        th Description
+    tbody
+      each c in categories
+        tr
+          td= c.name
+          td= c.description

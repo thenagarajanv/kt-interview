@@ -1,0 +1,9 @@
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/assetflow', { logging: false, dialectOptions: process.env.DB_SSL === 'true' ? { ssl: { require: true, rejectUnauthorized: false } } : {} });
+const Employee = sequelize.define('Employee', { employeeCode: { type: DataTypes.STRING, unique: true, allowNull: false }, name: { type: DataTypes.STRING, allowNull: false }, email: DataTypes.STRING, branch: { type: DataTypes.STRING, allowNull: false }, department: DataTypes.STRING, active: { type: DataTypes.BOOLEAN, defaultValue: true } });
+const Category = sequelize.define('Category', { name: { type: DataTypes.STRING, unique: true, allowNull: false }, description: DataTypes.STRING });
+const Asset = sequelize.define('Asset', { assetCode: { type: DataTypes.STRING, unique: true, allowNull: false }, serialNumber: { type: DataTypes.STRING, unique: true, allowNull: false }, make: DataTypes.STRING, model: DataTypes.STRING, purchaseDate: DataTypes.DATEONLY, purchaseValue: { type: DataTypes.DECIMAL(12, 2), defaultValue: 0 }, branch: { type: DataTypes.STRING, allowNull: false }, status: { type: DataTypes.ENUM('IN_STOCK', 'ISSUED', 'SCRAPPED'), defaultValue: 'IN_STOCK' } });
+const AssetEvent = sequelize.define('AssetEvent', { action: { type: DataTypes.ENUM('PURCHASED', 'ISSUED', 'RETURNED', 'SCRAPPED'), allowNull: false }, eventDate: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }, reason: DataTypes.STRING, notes: DataTypes.TEXT });
+Category.hasMany(Asset); Asset.belongsTo(Category); Employee.hasMany(AssetEvent); AssetEvent.belongsTo(Employee); Asset.hasMany(AssetEvent); AssetEvent.belongsTo(Asset);
+module.exports = sequelize;
+module.exports.Employee = Employee; module.exports.Category = Category; module.exports.Asset = Asset; module.exports.AssetEvent = AssetEvent;

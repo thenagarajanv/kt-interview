@@ -1,0 +1,24 @@
+extends layout
+block content
+  h1 Stock view
+  p.text-muted Assets ready for assignment. Total acquisition value: strong ₹#{total.toLocaleString('en-IN',{minimumFractionDigits:2})}
+  table.table.datatable
+    thead
+      tr
+        th Asset ID
+        th Category
+        th Make / model
+        th Serial
+        th Branch
+        th Value
+    tbody
+      each a in assets
+        tr
+          td= a.assetCode
+          td= a.Category && a.Category.name
+          td #{a.make} #{a.model}
+          td= a.serialNumber
+          td= a.branch
+          td ₹#{Number(a.purchaseValue).toLocaleString('en-IN',{minimumFractionDigits:2})}
+    tfoot: tr.fw-bold: td(colspan='5') Total stock value
+      td ₹#{total.toLocaleString('en-IN',{minimumFractionDigits:2})}

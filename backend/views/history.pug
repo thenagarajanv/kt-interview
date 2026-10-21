@@ -1,0 +1,22 @@
+extends layout
+block content
+  h1 Asset history
+  .card.mb-4
+    .card-body
+      h5.mb-1 #{asset.assetCode} · #{asset.make} #{asset.model}
+      .text-muted Serial: #{asset.serialNumber} · #{asset.Category && asset.Category.name} · #{asset.branch}
+  .timeline
+    each e in events
+      .card.mb-3
+        .card-body
+          .d-flex.justify-content-between
+            strong= e.action
+            span.text-muted= new Date(e.eventDate).toLocaleString()
+          if e.Employee
+            div Employee: #{e.Employee.name} (#{e.Employee.employeeCode})
+          if e.reason
+            div Reason: #{e.reason}
+          if e.notes
+            div Notes: #{e.notes}
+    if !events.length
+      p.text-muted No history recorded.

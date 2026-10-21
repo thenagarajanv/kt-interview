@@ -1,0 +1,14 @@
+require('dotenv').config();
+const express = require('express');
+const methodOverride = require('method-override');
+const sequelize = require('./models');
+const app = express();
+app.set('view engine', 'pug'); app.set('views', __dirname + '/views');
+app.use(express.urlencoded({ extended: true })); app.use(methodOverride('_method')); app.use(express.static(__dirname + '/public'));
+app.use('/', require('./routes/dashboard'));
+app.use('/employees', require('./routes/employees'));
+app.use('/categories', require('./routes/categories'));
+app.use('/assets', require('./routes/assets'));
+app.use('/', require('./routes/lifecycle'));
+app.use((err, req, res, next) => { console.error(err); res.status(500).send('Something went wrong. Check the database connection and input values.'); });
+sequelize.authenticate().then(() => sequelize.sync()).then(() => app.listen(process.env.PORT || 3000, () => console.log('AssetFlow running on http://localhost:3000'))).catch(error => { console.error('Database connection failed:', error.message); process.exit(1); });

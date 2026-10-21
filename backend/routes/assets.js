@@ -1,0 +1,12 @@
+const router = require('express').Router();
+const { Op } = require('sequelize');
+const { Asset, Category, AssetEvent, Employee } = require('../models');
+const include = [{ model: Category }];
+router.get('/', async (req, res) => { const where = {}; if (req.query.category) where.CategoryId = req.query.category; if (req.query.q) where[Op.or] = ['assetCode', 'serialNumber', 'make', 'model'].map(field => ({ [field]: { [Op.iLike]: `%${req.query.q}%` } })); res.render('assets', { assets: await Asset.findAll({ where, include, order: [['createdAt', 'DESC']] }), categories: await Category.findAll(), filters: req.query }); });
+router.get('/new', async (req, res) => res.render('asset-form', { asset: {}, categories: await Category.findAll(), title: 'Register asset' }));
+router.post('/', async (req, res) => { const asset = await Asset.create(req.body); await AssetEvent.create({ AssetId: asset.id, action: 'PURCHASED', reason: 'Asset registered' }); res.redirect('/assets'); });
+router.get('/:id/edit', async (req, res) => res.render('asset-form', { asset: await Asset.findByPk(req.params.id), categories: await Category.findAll(), title: 'Edit asset' }));
+router.put('/:id', async (req, res) => { await Asset.update(req.body, { where: { id: req.params.id } }); res.redirect('/assets'); });
+router.post('/:id/scrap', async (req, res) => { await Asset.sequelize.transaction(async transaction => { await Asset.update({ status: 'SCRAPPED' }, { where: { id: req.params.id }, transaction }); await AssetEvent.create({ AssetId: req.params.id, action: 'SCRAPPED', reason: req.body.reason || 'Obsolete', notes: req.body.notes }, { transaction }); }); res.redirect('/assets'); });
+router.get('/:id/history', async (req, res) => res.render('history', { asset: await Asset.findByPk(req.params.id, { include }), events: await AssetEvent.findAll({ where: { AssetId: req.params.id }, include: [Employee], order: [['eventDate', 'DESC']] }) }));
+module.exports = router;
